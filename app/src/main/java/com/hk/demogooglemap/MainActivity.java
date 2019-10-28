@@ -72,9 +72,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
-        LatLng nangalkot = new LatLng(23.17, 91.20);
-        googleMap.addMarker(new MarkerOptions().position(nangalkot)).setTitle("Nangalkot Home Town");
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(nangalkot, 16));
+        LatLng comilla = new LatLng(23.4615864,91.1788489);
+        googleMap.addMarker(new MarkerOptions().position(comilla)).setTitle("Comilla,Home Town");
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(comilla, 17));
 
         googleMap.getUiSettings().setMyLocationButtonEnabled(false);
         googleMap.getUiSettings().setZoomControlsEnabled(true);
