@@ -11,8 +11,10 @@ import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -21,6 +23,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -82,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private void getCurrentLocation() {
 
-        FusedLocationProviderClient locationProviderClient = new FusedLocationProviderClient(this);
+        FusedLocationProviderClient locationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) !=
                     PackageManager.PERMISSION_GRANTED &&
@@ -91,18 +94,17 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 return;
             }
         }
-        Task result = locationProviderClient.getLastLocation();
-        result.addOnCompleteListener(new OnCompleteListener() {
+        locationProviderClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
             @Override
-            public void onComplete(@NonNull Task task) {
-
-                if (task.isSuccessful()) {
-                    Location cLocation = (Location) task.getResult();
+            public void onSuccess(Location cLocation) {
+                if(cLocation!=null){
                     LatLng cLatlong = new LatLng(cLocation.getLatitude(), cLocation.getLongitude());
                     String address = getAddress(cLocation.getLatitude(), cLocation.getLongitude());
                     map.addMarker(new MarkerOptions().position(cLatlong).title(address));
                     map.moveCamera(CameraUpdateFactory.newLatLngZoom(cLatlong, 17));
-
+                }
+                else{
+                    Toast.makeText(MainActivity.this, "Something wrong", Toast.LENGTH_SHORT).show();
                 }
             }
         });
